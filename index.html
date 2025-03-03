@@ -18,7 +18,7 @@
     <div class="info"><b>ISP:</b> <span id="isp">Memuat...</span></div>
 
     <script>
-        fetch("http://localhost:5000/get-ip")  // Hubungkan ke backend Flask
+        fetch("https://api.ipify.org?format=json")  // Hubungkan ke backend Flask
             .then(response => response.json())
             .then(data => {
                 document.getElementById("ip").innerText = data.ip;
