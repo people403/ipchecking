@@ -46,7 +46,6 @@
     th, td {
       border: 1px solid #ddd;
       padding: 8px;
-      /* Ubah text-align di sini menjadi center */
       text-align: center;
     }
     
@@ -54,16 +53,15 @@
       background-color: #f2f2f2;
     }
     
-    /* Jika ingin warna khusus untuk kolom pertama dan kedua tetap,
-       kamu bisa tetap gunakan aturan ini, karena text-align di sini akan override.
-       Misal:
-    */
+    /* Warna khusus untuk kolom pertama (kunci) */
     table tr td:first-child {
-      color: #ffffff; /* Warna untuk kunci */
+      color: #ffffff;
       font-weight: bold;
     }
+    
+    /* Warna khusus untuk kolom kedua (nilai) */
     table tr td:nth-child(2) {
-      color: #ffffff; /* Warna untuk nilai */
+      color: #ffffff;
     }
   </style>
 </head>
@@ -74,9 +72,9 @@
     const teks = "Checking IP Publik Informasion Accurate";
     let index = 0;
     let isDeleting = false;
-    const kecepatanKetik = 150; // kecepatan mengetik (ms per karakter)
-    const jedaSelesai = 2000;  // jeda setelah selesai mengetik (ms)
-    const jedaMulaiKetik = 500; // jeda sebelum mulai mengetik lagi setelah menghapus
+    const kecepatanKetik = 150; // ms per karakter
+    const jedaSelesai = 2000;   // ms setelah selesai mengetik
+    const jedaMulaiKetik = 500;  // ms sebelum mulai mengetik lagi setelah menghapus
     const h2 = document.getElementById("typewriter");
 
     function typewriter() {
@@ -99,7 +97,6 @@
       }
       setTimeout(typewriter, kecepatanKetik);
     }
-
     typewriter();
   </script>
   <br><br><br>
@@ -111,37 +108,30 @@
       const tombol = document.getElementById('cekBtn');
       tombol.innerText = "Loading...";
       
-      // Mengambil data dari API ip-api.com
-      fetch("https://api.ipify.org?format=json")
+      // Mengambil data dari API ipwhois.app yang mendukung HTTPS
+      fetch("https://ipwhois.app/json/")
         .then(response => response.json())
         .then(data => {
           let tabel = "<table>";
           tabel += "<tr><th>Jenis Informasi</th><th>Detail</th></tr>";
 
+          // Objek terjemahan kunci JSON ke bahasa Indonesia
           const terjemahan = {
-            query: "Alamat IP",
-            status: "Status",
+            ip: "Alamat IP",
+            success: "Status",
+            type: "Tipe Koneksi",
             continent: "Benua",
-            continentCode: "Kode Benua",
+            continent_code: "Kode Benua",
             country: "Negara",
-            countryCode: "Kode Negara",
-            region: "Kode Wilayah",
-            regionName: "Wilayah",
+            country_code: "Kode Negara",
+            region: "Region",
             city: "Kota",
-            district: "Distrik",
-            zip: "Kode Pos",
-            lat: "Garis Lintang",
-            lon: "Garis Bujur",
-            timezone: "Zona Waktu",
-            offset: "Selisih Waktu (detik)",
-            currency: "Mata Uang",
-            isp: "Penyedia Layanan Internet",
+            latitude: "Garis Lintang",
+            longitude: "Garis Bujur",
+            isp: "ISP",
             org: "Organisasi",
-            as: "Autonomous System (AS)",
-            asname: "Nama AS",
-            mobile: "Jaringan Seluler",
-            proxy: "Menggunakan Proxy",
-            hosting: "Layanan Hosting"
+            timezone: "Zona Waktu"
+            // Tambahkan properti lain jika diinginkan...
           };
 
           for (const kunci in data) {
