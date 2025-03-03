@@ -112,7 +112,7 @@
       tombol.innerText = "Loading...";
       
       // Mengambil data dari API ip-api.com
-      fetch("https://members.ip-api.com/")
+      fetch("https://api.ipify.org?format=json")
         .then(response => response.json())
         .then(data => {
           let tabel = "<table>";
