@@ -1,35 +1,166 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cek IP Publik & Lokasi</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
-        .info { margin: 20px 0; font-size: 18px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cek IP Publik dan Informasi Lengkap</title>
+  <style>
+    /* Efek typewriter untuk h2 */
+    h2 {
+      font-size: 24px;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 2px solid black; /* Efek kursor */
+      display: inline-block;
+      /* Animasi perubahan warna teks */
+      animation: colorchange 5s infinite;
+    }
+    @keyframes colorchange {
+      0%   { color: red; }
+      25%  { color: blue; }
+      50%  { color: green; }
+      75%  { color: orange; }
+      100% { color: red; }
+    }
+    
+    body {
+      width: 500px;
+      height: 500px;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-image: url(bg2.jpg);
+    }
+    
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 80%;
+    }
+    
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      /* Ubah text-align di sini menjadi center */
+      text-align: center;
+    }
+    
+    th {
+      background-color: #f2f2f2;
+    }
+    
+    /* Jika ingin warna khusus untuk kolom pertama dan kedua tetap,
+       kamu bisa tetap gunakan aturan ini, karena text-align di sini akan override.
+       Misal:
+    */
+    table tr td:first-child {
+      color: #ffffff; /* Warna untuk kunci */
+      font-weight: bold;
+    }
+    table tr td:nth-child(2) {
+      color: #ffffff; /* Warna untuk nilai */
+    }
+  </style>
 </head>
 <body>
-    <h2>IP Publik & Informasi Lokasi</h2>
-    <div class="info"><b>IP Anda:</b> <span id="ip">Memuat...</span></div>
-    <div class="info"><b>Negara:</b> <span id="country">Memuat...</span></div>
-    <div class="info"><b>Wilayah:</b> <span id="region">Memuat...</span></div>
-    <div class="info"><b>Kota:</b> <span id="city">Memuat...</span></div>
-    <div class="info"><b>ISP:</b> <span id="isp">Memuat...</span></div>
+  <h2 id="typewriter"></h2>
+    
+  <script>
+    const teks = "Checking IP Publik Informasion Accurate";
+    let index = 0;
+    let isDeleting = false;
+    const kecepatanKetik = 150; // kecepatan mengetik (ms per karakter)
+    const jedaSelesai = 2000;  // jeda setelah selesai mengetik (ms)
+    const jedaMulaiKetik = 500; // jeda sebelum mulai mengetik lagi setelah menghapus
+    const h2 = document.getElementById("typewriter");
 
-    <script>
-        fetch("https://members.ip-api.com/")  // Hubungkan ke backend Flask
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("ip").innerText = data.ip;
-                document.getElementById("country").innerText = data.country;
-                document.getElementById("region").innerText = data.region;
-                document.getElementById("city").innerText = data.city;
-                document.getElementById("isp").innerText = data.isp;
-            })
-            .catch(error => {
-                document.getElementById("ip").innerText = "Gagal mendapatkan data";
-            });
-    </script>
+    function typewriter() {
+      if (!isDeleting) {
+        h2.innerHTML = teks.slice(0, index);
+        index++;
+        if (index > teks.length) {
+          isDeleting = true;
+          setTimeout(typewriter, jedaSelesai);
+          return;
+        }
+      } else {
+        h2.innerHTML = teks.slice(0, index);
+        index--;
+        if (index === 0) {
+          isDeleting = false;
+          setTimeout(typewriter, jedaMulaiKetik);
+          return;
+        }
+      }
+      setTimeout(typewriter, kecepatanKetik);
+    }
+
+    typewriter();
+  </script>
+  <br><br><br>
+  <button id="cekBtn">Cheking IP</button>
+  <div id="result" style="margin-top:20px;"></div>
+
+  <script>
+    document.getElementById('cekBtn').addEventListener('click', function() {
+      const tombol = document.getElementById('cekBtn');
+      tombol.innerText = "Loading...";
+      
+      // Mengambil data dari API ip-api.com
+      fetch("https://members.ip-api.com/")
+        .then(response => response.json())
+        .then(data => {
+          let tabel = "<table>";
+          tabel += "<tr><th>Jenis Informasi</th><th>Detail</th></tr>";
+
+          const terjemahan = {
+            query: "Alamat IP",
+            status: "Status",
+            continent: "Benua",
+            continentCode: "Kode Benua",
+            country: "Negara",
+            countryCode: "Kode Negara",
+            region: "Kode Wilayah",
+            regionName: "Wilayah",
+            city: "Kota",
+            district: "Distrik",
+            zip: "Kode Pos",
+            lat: "Garis Lintang",
+            lon: "Garis Bujur",
+            timezone: "Zona Waktu",
+            offset: "Selisih Waktu (detik)",
+            currency: "Mata Uang",
+            isp: "Penyedia Layanan Internet",
+            org: "Organisasi",
+            as: "Autonomous System (AS)",
+            asname: "Nama AS",
+            mobile: "Jaringan Seluler",
+            proxy: "Menggunakan Proxy",
+            hosting: "Layanan Hosting"
+          };
+
+          for (const kunci in data) {
+            if (terjemahan[kunci]) {
+              tabel += `<tr>
+                          <td>${terjemahan[kunci]}</td>
+                          <td>${data[kunci]}</td>
+                        </tr>`;
+            }
+          }
+          tabel += "</table>";
+          document.getElementById("result").innerHTML = tabel;
+          tombol.innerText = "Try Again";
+        })
+        .catch(error => {
+          document.getElementById("result").innerHTML = "<p>Gagal mendapatkan data IP.</p>";
+          tombol.innerText = "Not Working Try Again...";
+        });
+    });
+  </script>
 </body>
 </html>
